@@ -1,4 +1,5 @@
 #Imports
+import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer, PorterStemmer
@@ -6,7 +7,7 @@ import string
 import csv
 nltk.download("punkt")
 nltk.download("stopwords")
-nltk.download("wordnet"
+nltk.download("wordnet")
 
 # Read in the csv files
 reader = csv.reader(open('news.csv'))
@@ -33,10 +34,16 @@ print("The number of unique words are: ",unique(tokens))
 # Part B
 stop_tokens = []
 stop_words = set(stopwords.words("english"))
-remove_punc = tokens
+temp = tokens
 # Removing punctuation
+def remove_punctuation(not_removed):
+    trans = str.maketrans('', '', string.punctuation)
+    stripped = [x.translate(trans) for x in not_removed]
+    return stripped
+
+remove_punc = [remove_punctuation(x) for x in temp]
+
 for x in remove_punc:
-    x = x.translate(str.maketrans('','',string.punctuation))
     if x.lower() not in stop_words:
         stop_tokens.append(x)
 
