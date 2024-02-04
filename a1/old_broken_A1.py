@@ -16,7 +16,8 @@ reader = csv.reader(open('news.csv'))
 tokens = []
 for line in reader:
     for field in line:
-        tokens.append(word_tokenize(field))
+        for x in field:
+            tokens.append(word_tokenize(x))
 
 # Function to pull out unique words
 def unique(list1): 
@@ -25,5 +26,10 @@ def unique(list1):
         if x not in unique_list:
             unique_list.append(x)
     print(len(unique_list))
+    print(tokens[:50])
 
-print(tokens[:6])
+print("Tokens")
+print(len(tokens))
+print(tokens[:20])
+print("Unique Tokens")
+unique(tokens)
