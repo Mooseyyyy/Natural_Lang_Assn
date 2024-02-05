@@ -19,56 +19,34 @@ for line in reader:
         tokens.append(word_tokenize(field))
 
 # Function to pull out unique words
-def unique(list1): 
-    unique_list = []
-    for x in list1:
-        if x not in unique_list:
-            unique_list.append(x)
-    print(len(unique_list))
+
+def count_total_elements(my_list):
+    total_elements = 0
+ 
+    for item in my_list:
+        if isinstance(item, list):
+            total_elements += count_total_elements(item)
+        else:
+            total_elements += 1
+
+    return total_elements
+
+unique_list = []
+def count_unique_elements(my_list):
+    global unique_list
+    for item in my_list:
+        #If item is a list
+        if isinstance(item, list):
+            count_unique_elements(item)
+        else:
+            #item is single element
+            if item not in unique_list:
+                unique_list.append(item)
+ 
+    return len(unique_list)
 
 #Part A
 print("Part a.) With Stopwords")
 print("The number of word tokens in the corpus is: ")
-print(len(tokens))
-print("The number of unique words are: ")
-unique(tokens)
-
-# Part B
-stop_tokens = []
-stop_words = set(stopwords.words("english"))
-temp = tokens
-# Removing punctuation
-def remove_punctuation(not_removed):
-    trans = str.maketrans('', '', string.punctuation)
-    stripped = [x.translate(trans) for x in not_removed]
-    return stripped
-
-remove_punc = [remove_punctuation(x) for x in temp]
-
-for x in remove_punc:
-    for y in x:
-        if y not in stop_words:
-            stop_tokens.append(y)
-
-print("Part b.) Without Stopwords")
-print("The number of word tokens in the courpus is: ", len(stop_tokens))
-print("The number of unique words are: ", unique(stop_tokens))
-
-# Part C
-lem = WordNetLemmatizer()
-stoplem_tokens = []
-for x in stop_tokens:
-    stoplem_tokens.append(lem.lemmatize(x))
-
-print("Part c.) Without Stopwords and Lemmatization")
-print("The number of word tokens in the corpus is: ", len(stoplem_tokens))
-print("The number of unique words are: ", unique(stoplem_tokens))
-
-# Part D
-ps = PorterStemmer()
-stopstem_tokens = []
-for x in stop_tokens:
-    stopstem_tokens.append(ps.stem(x))
-print("Part d.) Without Stopwords and Stemming")
-print("The number of word tokens in the corpus is: ", len(stopstem_tokens))
-print("The number of unique words are: ", unique(stopstem_tokens))
+print(count_total_elements(tokens))
+print(count_unique_elements(tokens))

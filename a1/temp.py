@@ -1,7 +1,3 @@
-#Part A
-print("Part a.) With Stopwords")
-print("The number of word tokens in the corpus is: ")
-print(len(tokens))
 print("The number of unique words are: ")
 unique(tokens)
 
