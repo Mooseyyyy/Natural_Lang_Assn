@@ -49,4 +49,5 @@ def count_unique_elements(my_list):
 print("Part a.) With Stopwords")
 print("The number of word tokens in the corpus is: ")
 print(count_total_elements(tokens))
+print("The number of unique words are: ")
 print(count_unique_elements(tokens))
