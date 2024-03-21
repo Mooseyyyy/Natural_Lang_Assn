@@ -19,7 +19,7 @@ nltk.download("wordnet")
 reader = csv.reader(open('news.csv'))
 
 # Tokenize all words in file
-tokens = []
+etokens = []
 for line in reader:
     for field in line:
         tokens.append(word_tokenize(field))

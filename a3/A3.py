@@ -49,11 +49,11 @@ def negation_abbreviated_to_standard(sent):
     return sent
 
 # We get the text of reviews in the training set
-reviews = x_train['review']
-
+reviews = X_train
+print(type(reviews))
 def review_to_words(raw_review):
     # 2. Transform abbreviated negations to the standard form.
-    review_text = negation_abbreviated_to_standard(review_text)
+    review_text = negation_abbreviated_to_standard(raw_review)
 
     # 3. Remove non-letters and non-numbers
     letters_numbers_only = re.sub("[^a-zA-Z_0-9]", " ", review_text)
