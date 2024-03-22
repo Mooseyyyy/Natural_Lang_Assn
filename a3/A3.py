@@ -7,16 +7,19 @@
 # Imports
 import pandas as pd
 import nltk
-import numpy as np
+import re
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
 nltk.download("stopwords")
 
 df = pd.read_csv('news.csv')
 
+# Split data for testing/training purposes
 X = df['text']
 y = df['label']
 
@@ -33,33 +36,31 @@ for no_stopword in no_stopwords:
 
 lemmatizer = WordNetLemmatizer()
 
-# function that receive a list of words and do lemmatization:
+# Lemmatization function
 def lemma_stem_text(words_list):
     # Lemmatizer
     text = [lemmatizer.lemmatize(token.lower()) for token in words_list]
     text = [lemmatizer.lemmatize(token.lower(), "v") for token in text]
     return text
 
-import re
 re_negation = re.compile("n't ")
-# function that receive a sequence of woords and return the same sequence transforming
-# abbreviated negations to the standard form.
+
+# Function to transform abbreviated negations to standard form
 def negation_abbreviated_to_standard(sent):
     sent = re_negation.sub(" not ", sent)
     return sent
 
-# We get the text of reviews in the training set
-reviews = X_train
-print(type(reviews))
-def review_to_words(raw_review):
+def review_to_words(text):
     # 2. Transform abbreviated negations to the standard form.
-    review_text = negation_abbreviated_to_standard(raw_review)
+    standard_text = negation_abbreviated_to_standard(text)
 
     # 3. Remove non-letters and non-numbers
-    letters_numbers_only = re.sub("[^a-zA-Z_0-9]", " ", review_text)
+    letters_numbers_only = re.sub("[^a-zA-Z_0-9]", " ", standard_text)
 
     # 4. Convert to lower case and split into individual words (tokenization)
-    words = np.char.lower(letters_numbers_only.split())
+    
+    words = letters_numbers_only.lower()
+    words = word_tokenize(words)
 
     # 5. Remove stop words
     meaningful_words = [w for w in words if not w in stopwords_list]
@@ -78,7 +79,7 @@ for i in X_train:
     cleaned_train_reviews.append(review_to_words(i))
 
 #Hyperparameters
-vectorizer = TfidfVectorizer(max_features = 20000, ngram_range = (1, 2))
+vectorizer = TfidfVectorizer(max_features = 10000, ngram_range = (1, 2))
 
 #Create training set with the words encoded as features of the reviews
 train_data_features = vectorizer.fit_transform(cleaned_train_reviews)
@@ -89,13 +90,14 @@ model = LogisticRegression(random_state = 0, solver = 'lbfgs' , multi_class = 'm
 #Train the model
 model.fit(train_data_features, y_train)
 
-num_reviews = len(X_test)
 clean_test_reviews = []
-
-for i in range(0, num_reviews):
-    clean_review = review_to_words(X_test[i])
-    clean_test_reviews.append(clean_review)
+for i in X_test:
+    clean_test_reviews.append(review_to_words(i))
 
 test_data_features = vectorizer.transform(clean_test_reviews)
 
 result = model.predict(test_data_features)
+accuracy = accuracy_score(y_test, result)
+print("Accuracy:", accuracy)
+print("Classification Report:")
+print(classification_report(y_test, result))
